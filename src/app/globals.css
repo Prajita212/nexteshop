@@ -24,3 +24,9 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+main{
+  max-width: 1020px;
+  margin:auto;
+  justify-content: center;
+align-items: center;
+}
