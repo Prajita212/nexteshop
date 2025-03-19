@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { FaShopify, FaCartPlus } from "react-icons/fa";
@@ -21,7 +21,7 @@ function Navbar() {
       repeatDelay: 2,
       yoyo: true,
     });
-  },[]);
+  }, []);
 
   return (
     <div className="flex justify-between items-center font-semibold p-8 top-0">
@@ -35,18 +35,18 @@ function Navbar() {
             : "hidden"
         }`}
       >
-        <Link href="/" onClick={toggleMenu}>
-          <h2 className="hover:underline underline-offset-3 hover:text-green-500 hover:scale-110 transition duration-300">
+        <Link href="/">
+          <h2 className="hover:underline underline-offset-3 hover:text-green-500 active:text-green-700 hover:scale-110 transition duration-300">
             Home
           </h2>
         </Link>
-        <Link href="/product" onClick={toggleMenu}>
-          <h2 className="hover:underline underline-offset-3 hover:text-green-500 hover:scale-110 transition duration-300">
+        <Link href="/product">
+          <h2 className="hover:underline underline-offset-3 hover:text-green-500 active:text-green-700 hover:scale-110 transition duration-300">
             Products
           </h2>
         </Link>
-        <Link href="/about" onClick={toggleMenu}>
-          <h2 className="hover:underline underline-offset-3 hover:text-green-500 hover:scale-110 transition duration-300">
+        <Link href="/about">
+          <h2 className="hover:underline underline-offset-3 hover:text-green-500 active:text-green-700 hover:scale-110 transition duration-300">
             About
           </h2>
         </Link>
@@ -54,7 +54,7 @@ function Navbar() {
       <div>
         <Link href="/cart" className="flex gap-3 items-center">
           <span className="flex text-red-400 text-sm"></span>
-          <FaCartPlus  className="hover:text-green-500" />
+          <FaCartPlus className="hover:text-green-500" />
         </Link>
       </div>
       <IoReorderThreeOutline

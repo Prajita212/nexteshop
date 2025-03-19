@@ -1,117 +1,165 @@
-'use client'
-import React, { useContext, useEffect, useState } from "react";
-import Link from "next/link";
-import { CartContext } from "@/context/cartProvider";
+"use client";
 
+import { useEffect, useState } from "react";
 
-function Product() {
+export default function Home() {
   const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const { dispatch } = useContext(CartContext);
-  const normalizeCategory = (category) => {
-    return category.toLowerCase().replace(/'/g, "");
-  };
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All Products");
+  const [cart, setCart] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchProducts = async () => {
       try {
-        const [fakeStoreResponse, jsonServerResponse] = await Promise.all([
-          fetch("https://fakestoreapi.com/products"),
-          fetch("http://localhost:3001/products"),
-        ]);
+        const res = await fetch("https://fakestoreapi.com/products");
+        const data = await res.json();
 
-        const [fakeStoreData, jsonServerData] = await Promise.all([
-          fakeStoreResponse.json(),
-          jsonServerResponse.json(),
-        ]);
-
-  
-        const normalizedFakeStoreData = fakeStoreData.map((product) => ({
-          ...product,
-          category: normalizeCategory(product.category),
-        }));
-
-        const normalizedJsonServerData = jsonServerData.map((product) => ({
-          ...product,
-          category: normalizeCategory(product.category),
-        }));
-
-      
-        const combinedData = [
-          ...normalizedFakeStoreData,
-          ...normalizedJsonServerData,
+        const uniqueCategories = [
+          "All Products",
+          ...new Set(data.map((product) => product.category)),
         ];
-        setProducts(combinedData);
-        setFilteredProducts(combinedData);
+
+        setProducts(data);
+        setCategories(uniqueCategories);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching products:", error);
       }
     };
 
-    fetchData();
+    fetchProducts();
   }, []);
 
-  const handleFilter = (category) => {
-    setSelectedCategory(category);
-    if (category === "all") {
-      setFilteredProducts(products);
-    } else {
-      const normalizedCategory = normalizeCategory(category);
-      const filtered = products.filter(
-        (pro) => normalizeCategory(pro.category) === normalizedCategory
-      );
-      setFilteredProducts(filtered);
+  const filteredProducts =
+    selectedCategory === "All Products"
+      ? products
+      : products.filter((product) => product.category === selectedCategory);
+
+  const addToCart = (product) => {
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item.id === product.id);
+      if (existingItem) {
+        return prevCart.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      } else {
+        return [...prevCart, { ...product, quantity: 1 }];
+      }
+    });
+  };
+
+  const sendCartToAPI = async () => {
+    try {
+      const response = await fetch("https://fakestoreapi.com/carts", {
+        method: "POST",
+        body: JSON.stringify({
+          userId: 1, // Simulated user ID
+          date: new Date().toISOString().split("T")[0], // Current date
+          products: cart.map((item) => ({
+            productId: item.id,
+            quantity: item.quantity,
+          })),
+        }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await response.json();
+      console.log("Cart successfully sent to API:", data);
+      alert("Cart successfully sent!");
+    } catch (error) {
+      console.error("Error sending cart:", error);
     }
   };
 
-  const handleAddToCart = (product) => {
-    dispatch({ type: "Add", payload: product });
-  };
-
   return (
-    <div className="md:p-10 p-5">
-      <div className="md:flex grid grid-cols-2 md:gap-8 gap-1 mb-8">
-        {["all", "men's clothing", "women's clothing", "jewelery", "electronics"].map((category) => (
+    <div className="min-h-screen bg-black text-white p-4">
+      <h1 className="text-3xl font-bold text-center my-6 text-gray-100">
+        Product Categories
+      </h1>
+
+      {/* Category Buttons */}
+      <div className="flex justify-center flex-wrap gap-4 mb-8">
+        {categories.map((category) => (
           <button
             key={category}
-            onClick={() => handleFilter(category)}
-            className={`bg-gray-600 hover:bg-gray-900 border border-gray-400 text-white px-3 py-1 rounded-2xl ${
-              selectedCategory === category ? "bg-gray-900" : ""
+            onClick={() => setSelectedCategory(category)}
+            className={`px-4 py-2 rounded-md font-medium transition-all duration-300 ${
+              selectedCategory === category
+                ? "bg-blue-500 text-white shadow-lg"
+                : "bg-gray-800 text-gray-300 hover:bg-gray-700"
             }`}
           >
-            {category === "all" ? "All" : category}
+            {category}
           </button>
         ))}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
-        {filteredProducts.map((pro) => (
+
+      {/* Product List */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {filteredProducts.map((product) => (
           <div
-            key={pro.id}
-            className="border p-4 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+            key={product.id}
+            className="bg-gray-900 border border-gray-700 rounded-lg shadow-md p-4 flex flex-col items-center hover:shadow-lg transition-shadow"
           >
-            <Link href={`/product/${pro.id}`}>
-              <img
-                src={pro.image}
-                alt={pro.title}
-                className="w-full h-48 object-contain mb-4"
-              />
-              <div className="text-lg font-semibold">{pro.title}</div>
-              <div className="text-gray-700">${pro.price}</div>
-              <div className="text-sm text-gray-500">{pro.category}</div>
-            </Link><Link href='/cart'>
+            <img
+              src={product.image}
+              alt={product.title}
+              className="w-40 h-40 object-contain"
+            />
+            <h3 className="text-lg font-semibold mt-2 text-center text-gray-200">
+              {product.title}
+            </h3>
+            <p className="text-gray-400 text-sm mt-1 text-center">
+              {product.description.slice(0, 100)}...
+            </p>
+            <p className="text-green-400 font-semibold mt-2">
+              ${product.price}
+            </p>
+            <p className="text-sm text-gray-500">
+              Rating: {product.rating.rate} ⭐ ({product.rating.count} reviews)
+            </p>
             <button
-              className="w-30 border rounded-xl px-2 bg-gray-700 text-white hover:bg-gray-950 mt-1"
-              onClick={() => handleAddToCart(pro)}
-              aria-label="Add to Cart"
+              onClick={() => addToCart(product)}
+              className="mt-3 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
             >
-              Add to cart
-            </button></Link>
+              Add to Cart
+            </button>
           </div>
         ))}
+      </div>
+
+      {/* Cart Section */}
+      <div className="mt-8 p-4 bg-gray-900 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold text-gray-200">Shopping Cart</h2>
+        {cart.length === 0 ? (
+          <p className="text-gray-400">Your cart is empty.</p>
+        ) : (
+          <>
+            <ul className="mt-4">
+              {cart.map((item) => (
+                <li
+                  key={item.id}
+                  className="flex justify-between items-center py-2 border-b border-gray-700"
+                >
+                  <span>
+                    {item.title} (x{item.quantity})
+                  </span>
+                  <span className="text-green-400">
+                    ${item.price * item.quantity}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <button
+              onClick={sendCartToAPI}
+              className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
+            >
+              Checkout
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
 }
-
-export default Product;
