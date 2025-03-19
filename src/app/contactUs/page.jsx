@@ -1,5 +1,8 @@
+'use client'
+import gsap from "gsap";
 import Link from "next/link";
-import React from "react";
+import { React,useEffect,useRef } from "react";
+
 import {
     FaFacebook,
     FaTwitter,
@@ -7,15 +10,48 @@ import {
 } from "react-icons/fa";
 
 const Page = () => {
+    const imageRef=useRef()
+    const aboutRef=useRef()
+    const shopNowButtonRef=useRef()
+   useEffect(() => {
+     gsap.to(shopNowButtonRef.current, {
+          scale: 1.1,
+          repeat: -1,
+          yoyo: true,
+          duration: 1,
+          ease: "power1.inOut",
+        });
+       gsap.set(aboutRef.current, {
+         x: "-100vw",
+       });
+       gsap.set(imageRef.current, {
+         x: "100vw",
+       });
+       gsap.to(aboutRef.current, {
+         x: 0,
+         delay: 0.5,
+         duration: 1,
+         ease: "power1.out",
+       });
+       gsap.to(
+         imageRef.current,
+         {
+           x: 0,
+           duration: 1,
+           ease: "power1.out",
+         },
+         "-=1"
+       );
+     }, []); 
   return (
     <div className="relative font-serif">
       <header className="relative">
-        <img
+        <img ref={imageRef}
           src="/image/pic4.jpg"
           className="w-full h-[500px] object-cover opacity-60"
           alt="Background"
         />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-mono text-white">
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-mono text-white" ref={aboutRef}>
           <h1 className="text-4xl font-bold text-center">Contact Us</h1>
           <p className="mt-4 text-2xl text-center">
             We'd love to hear from you! Get in touch with us below.
@@ -173,7 +209,7 @@ const Page = () => {
           <Link href='/product'>
             <button
               className="p-2 px-4 mb-2 text-white bg-gray-700 transform skew-x-[-12deg] hover:bg-black cursor-pointer focus:outline-none hover:scale-105 duration-300 rounded-lg"
-            >
+            ref={shopNowButtonRef}>
               SHOP NOW
             </button>
           </Link>
