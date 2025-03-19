@@ -50,6 +50,11 @@ function Navbar() {
             About
           </h2>
         </Link>
+        <Link href="/contactUs" onClick={toggleMenu}>
+          <h2 className="hover:underline underline-offset-3 hover:text-green-500 hover:scale-110 transition duration-300">
+            Contact us
+          </h2>
+        </Link>
       </div>
       <div>
         <Link href="/cart" className="flex gap-3 items-center">

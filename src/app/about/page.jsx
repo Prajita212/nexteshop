@@ -30,7 +30,7 @@ function About() {
       },
       "-=1"
     );
-  }, []); // Empty dependency array to run effect once
+  }, []); 
 
   return (
     <div className="flex flex-col lg:flex-row items-center font-serif leading-relaxed justify-between lg:p-25 p-4">
