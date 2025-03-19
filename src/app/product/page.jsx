@@ -1,28 +1,49 @@
-"use client";
+'use client'
+import React, { useContext, useEffect, useState } from "react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { CartContext } from "@/context/cartProvider";
+
 
 function Product() {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
-
-
-  const normalizeCategory = (category) => category.toLowerCase().replace(/'/g, "");
+  const { dispatch } = useContext(CartContext);
+  const normalizeCategory = (category) => {
+    return category.toLowerCase().replace(/'/g, "");
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fakeStoreResponse = await fetch("https://fakestoreapi.com/products");
-        const fakeStoreData = await fakeStoreResponse.json();
+        const [fakeStoreResponse, jsonServerResponse] = await Promise.all([
+          fetch("https://fakestoreapi.com/products"),
+          fetch("http://localhost:3001/products"),
+        ]);
 
+        const [fakeStoreData, jsonServerData] = await Promise.all([
+          fakeStoreResponse.json(),
+          jsonServerResponse.json(),
+        ]);
+
+  
         const normalizedFakeStoreData = fakeStoreData.map((product) => ({
           ...product,
           category: normalizeCategory(product.category),
         }));
 
-        setProducts(normalizedFakeStoreData);
-        setFilteredProducts(normalizedFakeStoreData);
+        const normalizedJsonServerData = jsonServerData.map((product) => ({
+          ...product,
+          category: normalizeCategory(product.category),
+        }));
+
+      
+        const combinedData = [
+          ...normalizedFakeStoreData,
+          ...normalizedJsonServerData,
+        ];
+        setProducts(combinedData);
+        setFilteredProducts(combinedData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -37,9 +58,15 @@ function Product() {
       setFilteredProducts(products);
     } else {
       const normalizedCategory = normalizeCategory(category);
-      const filtered = products.filter((pro) => pro.category === normalizedCategory);
+      const filtered = products.filter(
+        (pro) => normalizeCategory(pro.category) === normalizedCategory
+      );
       setFilteredProducts(filtered);
     }
+  };
+
+  const handleAddToCart = (product) => {
+    dispatch({ type: "Add", payload: product });
   };
 
   return (
@@ -57,14 +84,13 @@ function Product() {
           </button>
         ))}
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {filteredProducts.map((pro) => (
           <div
             key={pro.id}
             className="border p-4 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow"
           >
-            <Link href={`/product-detail/${pro.id}`}>
+            <Link href={`/product/${pro.id}`}>
               <img
                 src={pro.image}
                 alt={pro.title}
@@ -73,7 +99,14 @@ function Product() {
               <div className="text-lg font-semibold">{pro.title}</div>
               <div className="text-gray-700">${pro.price}</div>
               <div className="text-sm text-gray-500">{pro.category}</div>
-            </Link>
+            </Link><Link href='/cart'>
+            <button
+              className="w-30 border rounded-xl px-2 bg-gray-700 text-white hover:bg-gray-950 mt-1"
+              onClick={() => handleAddToCart(pro)}
+              aria-label="Add to Cart"
+            >
+              Add to cart
+            </button></Link>
           </div>
         ))}
       </div>
