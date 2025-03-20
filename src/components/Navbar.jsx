@@ -18,7 +18,7 @@ function Navbar() {
       duration: 1,
       scale: 0,
       repeat: -1,
-      repeatDelay: 2,
+      repeatDelay:0.5,
       yoyo: true,
     });
   },[]);
@@ -55,15 +55,19 @@ function Navbar() {
             Contact us
           </h2>
         </Link>
+        <Link href="/cart"  onClick={toggleMenu} className="flex lg:hidden gap-2 items-center hover:underline underline-offset-3 hover:text-green-500 hover:scale-110 transition duration-300">
+        <h2 className="hover:underline underline-offset-3 hover:text-green-500 hover:scale-110 transition duration-300">
+            Cart
+          </h2><FaCartPlus className="text-sm"/></Link>
       </div>
-      <div>
+      <div className="hidden lg:flex">
         <Link href="/cart" className="gap-3 items-center">
           <span className="flex text-red-400 text-sm"></span>
           <FaCartPlus  className="hover:text-green-500" />
         </Link>
       </div>
       <IoReorderThreeOutline
-        className="md:hidden text-2xl cursor-pointer hover:text-green-500"
+        className="md:hidden text-2xl cursor-pointer hover:text-green-500 border-1"
         onClick={toggleMenu}
       />
     </div>
