@@ -2,7 +2,8 @@
 import gsap from "gsap";
 import Link from "next/link";
 import { React,useEffect,useRef } from "react";
-
+import Image from "next/image";
+import image from '../../../public/image/pic4.jpg'
 import {
     FaFacebook,
     FaTwitter,
@@ -46,8 +47,8 @@ const Page = () => {
   return (
     <div className="relative font-serif">
       <header className="relative">
-        <img ref={imageRef}
-          src="/image/pic4.jpg"
+        <Image ref={imageRef}
+          src={image}
           className="w-full h-[500px] object-cover opacity-60"
           alt="Background"
         />

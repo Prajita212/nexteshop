@@ -57,7 +57,7 @@ function Navbar() {
         </Link>
       </div>
       <div>
-        <Link href="/cart" className="flex gap-3 items-center">
+        <Link href="/cart" className="gap-3 items-center">
           <span className="flex text-red-400 text-sm"></span>
           <FaCartPlus  className="hover:text-green-500" />
         </Link>

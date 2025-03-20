@@ -2,6 +2,9 @@
 
 import React, { useRef, useEffect } from "react";
 import gsap from "gsap";
+import Image from "next/image";
+import image2 from '../../../public/image/pic2.jpg'
+import image3 from '../../../public/image/pic3.jpg'
 
 function Home() {
   const divRef = useRef(null);
@@ -82,14 +85,14 @@ function Home() {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-4">
-        <img
-          src='/pic2.jpg'
+        <Image
+          src={image2}
           alt="Fashion collection preview"
           loading="lazy"
           className="h-auto md:h-120 w-90 mt-2 lg:mt-0 duration-500 cursor-pointer hover:scale-105 hover:shadow-xl hover:shadow-black hover:brightness-105"
         />
-        <img
-          src='/pic3.jpg'
+        <Image
+          src={image3}
           alt="Trendy fashion styles"
           loading="lazy"
           className="h-auto md:h-120 w-90 mt-2 lg:mt-0 duration-500 cursor-pointer hover:scale-105 hover:shadow-xl hover:shadow-black hover:brightness-105"

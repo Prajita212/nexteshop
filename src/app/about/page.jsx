@@ -3,7 +3,8 @@
 import React, { useEffect, useRef } from "react";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import gsap from "gsap";
-
+import Image from "next/image";
+import image from '../../../public/image/pic1.jpg'
 function About() {
   const aboutRef = useRef();
   const imageRef = useRef();
@@ -56,7 +57,7 @@ function About() {
         </p>
       </div>
       <div ref={imageRef}>
-        <img src='/pic1.jpg' className="md:h-100 md:w-140 h-50 w-80 mt-3" />
+        <Image src={image} className="md:h-100 md:w-140 h-50 w-80 mt-3" />
       </div>
     </div>
   );
