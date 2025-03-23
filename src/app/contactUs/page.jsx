@@ -46,10 +46,10 @@ const Page = () => {
      }, []); 
   return (
     <div className="relative font-serif">
-      <header className="relative">
+      <header className="relative ">
         <Image ref={imageRef}
           src={image}
-          className="w-full h-[500px] object-cover opacity-60"
+          className="w-full h-[500px] object-cover brightness-60"
           alt="Background"
         />
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-mono text-white" ref={aboutRef}>

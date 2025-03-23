@@ -1,8 +1,8 @@
-'use client'
+"use client";
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { FaShopify, FaCartPlus } from "react-icons/fa";
-import { IoReorderThreeOutline } from "react-icons/io5";
+import { IoReorderThreeOutline, IoClose } from "react-icons/io5"; 
 import Link from "next/link";
 
 function Navbar() {
@@ -18,23 +18,59 @@ function Navbar() {
       duration: 1,
       scale: 0,
       repeat: -1,
-      repeatDelay:0.5,
+      repeatDelay: 0.5,
       yoyo: true,
     });
-  },[]);
+  }, []);
 
   return (
-    <div className="flex justify-between items-center font-semibold p-8 top-0">
+    <div className="flex relative z-10 justify-between items-center font-semibold p-8 top-0 bg-white shadow-md">
       <div>
         <FaShopify ref={gsapRef} className="md:text-3xl text-2xl" />
       </div>
+      <div className="hidden md:flex md:gap-20 gap-10">
+        <Link href="/">
+          <h2 className="hover:underline underline-offset-3 hover:text-green-500 hover:scale-110 transition duration-300">
+            Home
+          </h2>
+        </Link>
+        <Link href="/product">
+          <h2 className="hover:underline underline-offset-3 hover:text-green-500 hover:scale-110 transition duration-300">
+            Products
+          </h2>
+        </Link>
+        <Link href="/about">
+          <h2 className="hover:underline underline-offset-3 hover:text-green-500 hover:scale-110 transition duration-300">
+            About
+          </h2>
+        </Link>
+        <Link href="/contactUs">
+          <h2 className="hover:underline underline-offset-3 hover:text-green-500 hover:scale-110 transition duration-300">
+            Contact us
+          </h2>
+        </Link>
+      </div>
+
+      <div className="md:hidden flex items-center gap-4">
+        <button
+          onClick={toggleMenu}
+          className="text-2xl cursor-pointer hover:text-green-500"
+        >
+          <IoReorderThreeOutline />
+        </button>
+      </div>
       <div
-        className={`md:flex md:gap-20 gap-10 ${
-          isMenuOpen
-            ? "md:static fixed p-2  bg-white right-15 top-3 md:border-none border border-gray-200 z-50"
-            : "hidden"
+        className={`fixed inset-0 bg-white z-50 flex flex-col items-center justify-center space-y-8 transition-transform duration-300 ${
+          isMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
+        <button
+          onClick={toggleMenu}
+          className="absolute top-8 right-8 text-2xl cursor-pointer hover:text-green-500"
+        >
+          <IoClose />
+        </button>
+
         <Link href="/" onClick={toggleMenu}>
           <h2 className="hover:underline underline-offset-3 hover:text-green-500 hover:scale-110 transition duration-300">
             Home
@@ -55,21 +91,20 @@ function Navbar() {
             Contact us
           </h2>
         </Link>
-        <Link href="/cart"  onClick={toggleMenu} className="flex lg:hidden gap-2 items-center hover:underline underline-offset-3 hover:text-green-500 hover:scale-110 transition duration-300">
-        <h2 className="hover:underline underline-offset-3 hover:text-green-500 hover:scale-110 transition duration-300">
-            Cart
-          </h2><FaCartPlus className="text-sm"/></Link>
-      </div>
-      <div className="hidden lg:flex">
-        <Link href="/cart" className="gap-3 items-center">
-          <span className="flex text-red-400 text-sm"></span>
-          <FaCartPlus  className="hover:text-green-500" />
+        <Link
+          href="/cart"
+          onClick={toggleMenu}
+          className="flex gap-2 items-center hover:underline underline-offset-3 hover:text-green-500 hover:scale-110 transition duration-300"
+        >
+          <h2>Cart</h2>
+          <FaCartPlus className="text-sm" />
         </Link>
       </div>
-      <IoReorderThreeOutline
-        className="md:hidden text-2xl cursor-pointer hover:text-green-500 border-1"
-        onClick={toggleMenu}
-      />
+      <div className="hidden md:flex">
+        <Link href="/cart" className="gap-3 items-center">
+          <FaCartPlus className="hover:text-green-500" />
+        </Link>
+      </div>
     </div>
   );
 }
